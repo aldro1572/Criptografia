@@ -1,0 +1,14 @@
+﻿# Ignorar archivos de Visual Studio
+.vs/
+
+# Ignorar archivos de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env/
+.venv/
+
+# Archivos de sistema
+Thumbs.db
+.DS_Store
