@@ -5,7 +5,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 import os
 
-# Interfaz GUI sencilla con Tkinter
+# Interfaz realizada con Tkinter
 root = tk.Tk()
 root.title("Aplicación Criptográfica Simétrica")
 root.geometry("400x200")
