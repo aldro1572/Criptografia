@@ -3,8 +3,8 @@ from tkinter import filedialog, messagebox
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa, padding #Libreria para P3
+from cryptography.hazmat.primitives import serialization #Libreria para P3
 import json
 import os
 
