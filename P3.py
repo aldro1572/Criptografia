@@ -200,38 +200,65 @@ def decrypt_file(file_path, encrypted_key_path, private_key_path, password):
     return decrypted_path
 
 # Elementos de la GUI
-label_file = tk.Label(root, text="Archivo:")
-label_file.pack()
-entry_file = tk.Entry(root, width=50)
-entry_file.pack()
-button_select = tk.Button(root, text="Seleccionar Archivo", command=select_file)
-button_select.pack()
+root.config(bg="#f0f0f0")  # Fondo suave
 
-label_password = tk.Label(root, text="Contraseña:")
-label_password.pack()
-entry_password = tk.Entry(root, show="*", width=50)
-entry_password.pack()
+# Frame contenedor principal
+frame_main = tk.Frame(root, bg="#f0f0f0")
+frame_main.pack(fill="both", expand=True, padx=10, pady=10)
 
-label_public_key = tk.Label(root, text="Clave Pública (para cifrado):")
-label_public_key.pack()
-entry_public_key = tk.Entry(root, width=50)
-entry_public_key.pack()
-button_select_public = tk.Button(root, text="Seleccionar Clave Pública", command=select_public_key)
-button_select_public.pack()
+# Frame de archivo
+frame_file = tk.Frame(frame_main, bg="#f0f0f0")
+frame_file.pack(fill="x", pady=3)
 
-label_private_key = tk.Label(root, text="Clave Privada (para descifrado):")
-label_private_key.pack()
-entry_private_key = tk.Entry(root, width=50)
-entry_private_key.pack()
-button_select_private = tk.Button(root, text="Seleccionar Clave Privada", command=select_private_key)
-button_select_private.pack()
+label_file = tk.Label(frame_file, text="Archivo:", bg="#f0f0f0")
+label_file.grid(row=0, column=0, sticky="w")
+entry_file = tk.Entry(frame_file, width=35)
+entry_file.grid(row=0, column=1, padx=5)
+button_select = tk.Button(frame_file, text="Seleccionar Archivo", command=select_file, width=18)
+button_select.grid(row=0, column=2, padx=5)
 
-button_generate_keys = tk.Button(root, text="Generar Claves RSA", command=generate_rsa_keys)
-button_generate_keys.pack()
+# Frame de contraseña
+frame_password = tk.Frame(frame_main, bg="#f0f0f0")
+frame_password.pack(fill="x", pady=3)
 
-button_encrypt = tk.Button(root, text="Cifrar", command=encrypt)
-button_encrypt.pack()
-button_decrypt = tk.Button(root, text="Descifrar", command=decrypt)
-button_decrypt.pack()
+label_password = tk.Label(frame_password, text="Contraseña:", bg="#f0f0f0")
+label_password.grid(row=0, column=0, sticky="w")
+entry_password = tk.Entry(frame_password, show="*", width=35)
+entry_password.grid(row=0, column=1, padx=5)
+
+# Frame de clave pública
+frame_public = tk.Frame(frame_main, bg="#f0f0f0")
+frame_public.pack(fill="x", pady=3)
+
+label_public_key = tk.Label(frame_public, text="Clave Pública:", bg="#f0f0f0")
+label_public_key.grid(row=0, column=0, sticky="w")
+entry_public_key = tk.Entry(frame_public, width=25)
+entry_public_key.grid(row=0, column=1, padx=5)
+button_select_public = tk.Button(frame_public, text="Seleccionar Clave Pública", command=select_public_key, width=18)
+button_select_public.grid(row=0, column=2, padx=5)
+
+# Frame de clave privada
+frame_private = tk.Frame(frame_main, bg="#f0f0f0")
+frame_private.pack(fill="x", pady=3)
+
+label_private_key = tk.Label(frame_private, text="Clave Privada:", bg="#f0f0f0")
+label_private_key.grid(row=0, column=0, sticky="w")
+entry_private_key = tk.Entry(frame_private, width=25)
+entry_private_key.grid(row=0, column=1, padx=5)
+button_select_private = tk.Button(frame_private, text="Seleccionar Clave Privada", command=select_private_key, width=18)
+button_select_private.grid(row=0, column=2, padx=5)
+
+# Frame de acciones
+frame_actions = tk.Frame(frame_main, bg="#f0f0f0")
+frame_actions.pack(fill="x", pady=10)
+
+button_generate_keys = tk.Button(frame_actions, text="Generar Claves RSA", command=generate_rsa_keys, width=20)
+button_generate_keys.grid(row=0, column=0, padx=5)
+button_encrypt = tk.Button(frame_actions, text="Cifrar", command=encrypt, width=12)
+button_encrypt.grid(row=0, column=1, padx=5)
+button_decrypt = tk.Button(frame_actions, text="Descifrar", command=decrypt, width=12)
+button_decrypt.grid(row=0, column=2, padx=5)
+
+
 
 root.mainloop()
