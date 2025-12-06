@@ -1,0 +1,4 @@
+﻿print("--- INICIO DEL RANSOMWARE SIMULADO ---")
+print("ADVERTENCIA: Tus archivos han sido 'encriptados' (Simulacion).")
+print("Si esto fuera real, ahora tendrías que pagar.")
+print("--- FIN DE LA EJECUCION ---")
