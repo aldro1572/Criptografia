@@ -19,8 +19,7 @@ ARCHIVO_CA_KEY = os.path.join(CARPETA_DATOS, "ca_key.enc")
 ARCHIVO_CA_CERT = os.path.join(CARPETA_DATOS, "ca_cert.pem")
 CARPETA_USUARIOS = os.path.join(CARPETA_DATOS, "usuarios")
 
-# ==========================================
-# LÓGICA DE NEGOCIO (BACKEND MODIFICADO)
+
 # ==========================================
 class CryptoApp:
     def __init__(self):
@@ -30,19 +29,22 @@ class CryptoApp:
         self.ca_public_key = None
         self.ca_cert = None
 
+    #Convierte la contraseña en una clave AES de 256 bytes usando SHA-256
     def _get_key_from_secret(self, secret_text):
         digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
         digest.update(secret_text.encode())
         return digest.finalize()
 
+    # --- CIFRADO SIMÉTRICO AES ---
     def _encrypt_bytes_aes(self, data, key):
         iv = os.urandom(16)
         cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
         encryptor = cipher.encryptor()
-        padder = sym_padding.PKCS7(128).padder()
+        padder = sym_padding.PKCS7(128).padder() # Bloque de 128 bits (16 bytes) pq AES usa bloques de 16 bytes
         padded_data = padder.update(data) + padder.finalize()
         return iv + encryptor.update(padded_data) + encryptor.finalize()
 
+    # --- DESCIFRADO SIMÉTRICO AES ---
     def _decrypt_bytes_aes(self, encrypted_data, key):
         iv = encrypted_data[:16]
         actual_data = encrypted_data[16:]
@@ -54,9 +56,9 @@ class CryptoApp:
 
     # --- GESTIÓN DE AUTORIDAD ---
     def iniciar_autoridad(self, licencia):
-        key_aes = self._get_key_from_secret(licencia)
+        key_aes = self._get_key_from_secret(licencia) # Clave AES derivada de la licencia
 
-        if os.path.exists(ARCHIVO_CA_KEY):
+        if os.path.exists(ARCHIVO_CA_KEY): # Cargar CA existente
             try:
                 with open(ARCHIVO_CA_KEY, "rb") as f: enc_data = f.read()
                 dec_pem = self._decrypt_bytes_aes(enc_data, key_aes)
@@ -79,6 +81,7 @@ class CryptoApp:
                 datetime.datetime.utcnow() + datetime.timedelta(days=3650)).add_extension(
                 x509.BasicConstraints(ca=True, path_length=None), critical=True,).sign(self.ca_private_key, hashes.SHA256())
 
+            # Guardar clave y certificado de la CA
             pem = self.ca_private_key.private_bytes(encoding=serialization.Encoding.PEM, format=serialization.PrivateFormat.PKCS8, encryption_algorithm=serialization.NoEncryption())
             enc_data = self._encrypt_bytes_aes(pem, key_aes)
             with open(ARCHIVO_CA_KEY, "wb") as f: f.write(enc_data)
@@ -87,11 +90,13 @@ class CryptoApp:
 
     # --- GESTIÓN DE USUARIOS ---
     def crear_usuario(self, nombre, password):
+        # Crear par de claves y certificado firmado por la CA para el usuario
         if not self.ca_private_key: return False, "CA no iniciada."
         
         user_priv_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
         user_pub_key = user_priv_key.public_key()
 
+        # Crear certificado de usuario
         subject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, nombre)])
         cert = x509.CertificateBuilder().subject_name(subject).issuer_name(self.ca_cert.subject).public_key(
             user_pub_key).serial_number(x509.random_serial_number()).not_valid_before(
@@ -129,6 +134,7 @@ class CryptoApp:
         cabecera_claves = {}
         
         usuarios_validos = 0
+        #Verificar que el certificado es válido y firmado por la CA
         for usuario in lista_usuarios_destino:
             path_cert = os.path.join(CARPETA_USUARIOS, f"{usuario}.crt")
             if not os.path.exists(path_cert): continue
